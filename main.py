@@ -17,6 +17,7 @@ class Post(BaseModel):
 my_posts = [
     {"title": "title of post 1", "content": "content of post 1", "id": 1},
     {"title": "favourite foods", "content": "I like pizza", "id": 2},
+    {"title": "favourite movies", "content": "I like batman", "id": 3}
 ]
 
 
