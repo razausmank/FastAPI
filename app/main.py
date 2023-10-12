@@ -3,6 +3,7 @@ from typing import Optional
 from fastapi.params import Body
 from pydantic import BaseModel
 from random import randrange
+import psycopg
 
 app = FastAPI()
 
@@ -11,6 +12,16 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True
+
+
+try:
+    conn = psycopg.connect("dbname=FastApi user=postgres password=root")
+    cursor = conn.cursor()
+    print("database connection was succesfull ")
+except Exception as error:
+    print("connecting to database failed")
+    print("error", error)
+
 
 
 my_posts = [
