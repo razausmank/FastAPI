@@ -4,6 +4,7 @@ from fastapi.params import Body
 from pydantic import BaseModel
 from random import randrange
 import psycopg
+from psycopg.rows import dict_row
 
 app = FastAPI()
 
@@ -15,7 +16,7 @@ class Post(BaseModel):
 
 
 try:
-    conn = psycopg.connect("dbname=FastApi user=postgres password=root")
+    conn = psycopg.connect("dbname=FastApi user=postgres password=root", row_factory=dict_row)
     cursor = conn.cursor()
     print("database connection was succesfull ")
 except Exception as error:
@@ -50,8 +51,9 @@ def root():
 
 @app.get("/posts")
 def get_posts():
-    print(my_posts)
-    return {"data": my_posts}
+    posts = cursor.execute("""SELECT * FROM posts """)
+    posts = posts.fetchall()
+    return {"data": posts}
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
