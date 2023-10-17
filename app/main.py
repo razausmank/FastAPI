@@ -8,7 +8,7 @@ from psycopg.rows import dict_row
 from sqlalchemy.orm import Session
 from . import models
 from .database import engine, get_db
-from .schemas import PostCreate, Post
+from .schemas import PostCreate, Post, UserCreate
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -117,3 +117,13 @@ def update_post(id: int, post: PostCreate, db: Session = Depends(get_db)):
     post_query.update(post.model_dump(), synchronize_session=False)
     db.commit()
     return  post_query.first()
+
+
+@app.post("/users", status_code=status.HTTP_201_CREATED)
+def create_user( user: UserCreate, db: Session = Depends(get_db)):
+    new_user = models.User(**user.model_dump())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
